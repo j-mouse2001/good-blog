@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html>
-<!--
-author:guojunyu
-date:2019-05
-desc:this demo is about blog. PLEASE NOTE:If you have trouble running it ,try any of the other demos or connect with auther.
-A ny individuals and organizations and not for commercial use, professiona website for customized web site.
--->
+
 <head>
 		<meta charset="utf-8">
 		<link href="/static/css/login_reglogin.css" rel='stylesheet' type='text/css' />
@@ -34,24 +29,19 @@ A ny individuals and organizations and not for commercial use, professiona websi
             <input type="email" class="email" name="email" placeholder="请输入邮箱" required />
 						<div class="clear"> </div>
 					</li>
-					<li>
-            <input type="text" class="phone" name="phone" placeholder="请输入手机号" required />
-						<div class="clear"> </div>
+                    <li>
+                        <input type="text" class="phone" name="phone" placeholder="请输入手机号" required />
+                        <div class="clear"></div>
+                    </li>
+                    <li>
+                        <input type="button" id="sms" onclick="settime(this); sendSMS()" value="免费获取验证码">
+                        <div class="clear"></div>
+                    </li>
+                    <li>
+                        <input type="text" class="sms_num" name="sms_num" placeholder="请输入验证码" required/>
+                        <div class="clear"></div>
+                    </li>
 
-
-			<input type="button" id="sms" onclick="settime(this)" value="免费获取验证码">
-						<div class="clear"> </div>
-					</li>
-					<li>
-			<input type="sms_num" class="sms_num" name="sms_num" placeholder="请输入验证码" required/>
-					<div class="clear"> </div>
-					</li>
-            <!--
-					<li>
-            <input type="url" name="url" placeholder="请输入个人主站地址" required/>
-						<div class="clear"> </div>
-					</li> 
-            -->
 			<li>
             <input type="password" class="password_1" name="password_1" placeholder="请输入密码" required minlength="6" maxlength="11"/>
 						<div class="clear"> </div>
@@ -98,7 +88,43 @@ A ny individuals and organizations and not for commercial use, professiona websi
 			}
         }
     });
+    }
 
+    var countdown = 60;
+    function settime(button) {
+        if (countdown == 0) {
+            button.removeAttribute("disabled");
+            button.value = "免费获取验证码";
+            countdown = 60;
+            return;
+        } else {
+            button.setAttribute("disabled", true);
+            button.value = "重新发送(" + countdown + ")";
+            countdown--;
+        }
+        setTimeout(function() {
+            settime(button);
+        }, 1000);
+    }
+
+    function sendSMS() {
+        var phone = $('.phone').val();
+        var post_data = {"phone": phone}
+        $.ajax({
+            type: "post",
+            contentType: "application/json",
+            dataType: "json",
+            url: "http://127.0.0.1:8000/v1/users/sms/send",
+            data: JSON.stringify(post_data),
+            success: function (result) {
+                if (result.code == 200) {
+                    alert("message sent")
+                }
+                else {
+                    alert("send message failed")
+                }
+            }
+        })
     }
 
     </script>
