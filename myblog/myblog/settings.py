@@ -157,3 +157,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 JWT_TOKEN_KEY = '123456'
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+ACCOUNT_SID = '2c94811c8cd4da0a01901c42eedf3faa'
+ACCOUNT_TOKEN = '092dafa2fac04f79ae8b51145dc03703'
+APP_ID = '2c94811c8cd4da0a01901c42f06c3fb1'
+TEMPLATE_ID = '1'
+

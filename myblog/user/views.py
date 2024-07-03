@@ -1,11 +1,17 @@
+import random
+
 from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
 import json
+import random
 from .models import UserProfile
 import hashlib
 from django.utils.decorators import method_decorator
 from tools.login_decorator import login_check
+from django.core.cache import cache
+from tools.sms import YunTongXin
+from django.conf import settings
 
 
 # Create your views here.
@@ -94,3 +100,40 @@ def users_avatar(request, username):
 
     return JsonResponse({'code': 200})
 
+
+def send_sms(phone, code):
+    obj = YunTongXin(
+        settings.ACCOUNT_SID,
+        settings.ACCOUNT_TOKEN,
+        settings.APP_ID,
+        settings.TEMPLATE_ID
+    )
+    res = obj.run(phone, code)
+    return res
+
+
+def sms_view(request):
+    if request.method != 'POST':
+        result = {'code': 10108, 'error': 'please use a POST request'}
+        return JsonResponse(result)
+
+    # get the phone number from post data
+    json_str = request.body
+    json_obj = json.loads(json_str)
+    phone = json_obj['phone']
+
+    # generate a random 4 digit code
+    code = str(random.randint(1000, 9999))
+
+    # create phone code pair and save them in redis
+    cache_key = f'sms_{phone}'
+    cache_val = code
+    cache.set(cache_key, cache_val)
+
+    # send the sms
+    sms_res = json.loads(send_sms(phone, code))
+    print(sms_res)
+    if sms_res['statusCode'] != '000000':
+        return JsonResponse({'code': 10109, 'error': 'sms message send failed'})
+
+    return JsonResponse({'code': 200})
