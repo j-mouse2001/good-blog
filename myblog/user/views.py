@@ -40,10 +40,16 @@ class UserViews(View):
         password_1 = json_obj['password_1']
         password_2 = json_obj['password_2']
         phone = json_obj['phone']
+        sms_num = json_obj['sms_num']
 
         # check if the input is correct for creating user
         if password_1 != password_2:
             return JsonResponse({'code': 10100, 'error': 'passwords entered are not the same'})
+
+        # check if the verification code is correct
+        correct_code = cache.get(f'sms_{phone}')
+        if not correct_code or correct_code != sms_num:
+            return JsonResponse({'code': 10200, 'error': 'verification code is wrong'})
 
         # check if the username is available
         existed_users = UserProfile.objects.filter(username=username)
@@ -127,12 +133,18 @@ def sms_view(request):
 
     # create phone code pair and save them in redis
     cache_key = f'sms_{phone}'
+
+    # check if there is a code sent to this number and is not expired
+    possible_code = cache.get(cache_key)
+    if possible_code:
+        return JsonResponse({'code': 10201, 'error': 'The code has already sent to this number'})
+
+    # save the number and corresponding code to cache
     cache_val = code
-    cache.set(cache_key, cache_val)
+    cache.set(cache_key, cache_val, timeout=300)
 
     # send the sms
     sms_res = json.loads(send_sms(phone, code))
-    print(sms_res)
     if sms_res['statusCode'] != '000000':
         return JsonResponse({'code': 10109, 'error': 'sms message send failed'})
 

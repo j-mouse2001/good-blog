@@ -66,7 +66,9 @@
         var password_1 = $('.password_1').val()
         var password_2 = $('.password_2').val()
 		var phone = $('.phone').val()
-        var post_data = {'username':username, 'email':email, 'password_1':password_1, 'password_2':password_2, 'phone': phone}
+        var sms_num = $('.sms_num').val()
+        var post_data = {'username':username, 'email':email, 'password_1':password_1, 'password_2':password_2,
+            'phone': phone, 'sms_num': sms_num}
 
         $.ajax({
         // request method
@@ -121,7 +123,7 @@
                     alert("message sent")
                 }
                 else {
-                    alert("send message failed")
+                    alert(result.error)
                 }
             }
         })
