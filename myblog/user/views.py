@@ -12,6 +12,7 @@ from tools.login_decorator import login_check
 from django.core.cache import cache
 from tools.sms import YunTongXin
 from django.conf import settings
+from .tasks import send_sms_celery
 
 
 # Create your views here.
@@ -144,8 +145,9 @@ def sms_view(request):
     cache.set(cache_key, cache_val, timeout=300)
 
     # send the sms
-    sms_res = json.loads(send_sms(phone, code))
-    if sms_res['statusCode'] != '000000':
+    sms_res = send_sms_celery.delay(phone, code)
+    sms_res_value = json.loads(sms_res.get(timeout=300))
+    if sms_res_value['statusCode'] != '000000':
         return JsonResponse({'code': 10109, 'error': 'sms message send failed'})
 
     return JsonResponse({'code': 200})
