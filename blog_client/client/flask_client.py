@@ -35,18 +35,18 @@ def change_info(username):
     #修改个人信息
     return send_file('templates/change_info.html')
 
-@app.route('/<username>/topic/release')
+@app.route('/<username>/article/release')
 def topic_release(username):
     #发表博客
     return send_file('templates/release.html')
 
 
-@app.route('/<username>/topics')
+@app.route('/<username>/articles')
 def topics(username):
     #个人博客列表
     return send_file('templates/list.html')
 
-@app.route('/<username>/topics/detail/<t_id>')
+@app.route('/<username>/artiles/detail/<t_id>')
 def topics_detail(username, t_id):
     #博客内容详情
     return send_file('templates/detail.html')

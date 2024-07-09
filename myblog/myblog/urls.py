@@ -27,7 +27,8 @@ urlpatterns = [
     path('test_cors/', views.test_cors),
     path('v1/users', user_views.UserViews.as_view()),
     path('v1/tokens', tokens),
-    path('v1/users/', include('user.urls'))
+    path('v1/users/', include('user.urls')),
+    path('v1/articles/', include('article.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
