@@ -37,9 +37,9 @@ A ny individuals and organizations and not for commercial use, professiona websi
     var blog_username = arrUrl[1].split('/')[1];
 
     if(query_set){
-        var get_url = "http://127.0.0.1:8000/v1/topics/"+ blog_username + "?" + query_set;
+        var get_url = "http://127.0.0.1:8000/v1/articles/"+ blog_username + "?" + query_set;
     }else{
-        var get_url = "http://127.0.0.1:8000/v1/topics/"+ blog_username;
+        var get_url = "http://127.0.0.1:8000/v1/articles/"+ blog_username;
 
     }
 
@@ -71,26 +71,26 @@ A ny individuals and organizations and not for commercial use, professiona websi
                 html_body += '</h1>';
                 html_body += '<div class="blogsbox">';
                 html_body += '<br>';
-                var topics = result.data.topics
-                if(topics.length == 0){
+                var articles = result.data.articles
+                if(articles.length == 0){
                     html_body += '空空如也'
 
                 } else {
 
-                    for(var t in topics){
+                    for(var t in articles){
 
-                        var title = topics[t].title;
-                        var category = topics[t].category;
-                        var created_time = topics[t].created_time;
-                        var introduce = topics[t].introduce;
-                        var author = topics[t].author;
+                        var title = articles[t].title;
+                        var category = articles[t].category;
+                        var created_time = articles[t].created_time;
+                        var summary = articles[t].summary;
+                        var author = articles[t].author;
                         html_body += '<div class="blogsbox">';
                         html_body += '<div class="blogs" data-scroll-reveal="enter bottom over 1s">';
-                        ///<username>/topics/detail/<t_id>
-                        var detail_url = '/' + blog_username + '/topics/detail/' + topics[t].id
+                        ///<username>/articles/detail/<t_id>
+                        var detail_url = '/' + blog_username + '/articles/detail/' + articles[t].id
                         html_body += '<h3 class="blogtitle"><a href="' + detail_url + '"' + ' target="_blank">' + title + '</a></h3>';
                         html_body += '<p class="blogtext">';
-                        html_body += introduce;
+                        html_body += summary;
                         html_body += '...</p>'
                         //html_body += '<p class="blogtext">'+ '12345' + '...</p>';
                         html_body += '<div class="bloginfo">';
@@ -100,7 +100,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                         if(blog_username == username){
                             html_body += '<li class="" style="display:none"></li>';
                             html_body += '<li class="" style="padding-left:20px">编辑</li>';
-                            html_body += '<li class="delete" style="padding-left:20px" data=' + topics[t].id +'>删除</li>';
+                            html_body += '<li class="delete" style="padding-left:20px" data=' + articles[t].id +'>删除</li>';
                         }
                         html_body += '</ul>';
                         html_body += '</div>';
@@ -127,7 +127,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                 //添加删除事件
                 $('.delete').on('click', function(){
                     var delete_id = $(this).attr('data');
-                    var delete_url = "http://127.0.0.1:8000/v1/topics/"+ blog_username + "?" + 'topic_id=' + delete_id;
+                    var delete_url = "http://127.0.0.1:8000/v1/articles/"+ blog_username + "?" + 'topic_id=' + delete_id;
                     $.ajax({
                         // 请求方式
                         type:"delete",

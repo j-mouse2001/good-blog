@@ -122,14 +122,14 @@ function makeHeader(blog_username, username){
     var user_info_url = '/' + blog_username + '/' + 'info'
     //登陆用户发博客url
     if (username){
-        var topic_release_url = '/' + username + '/' + 'topic/release'
+        var article_release_url = '/' + username + '/' + 'article/release'
     }else{
         //没有登陆状态直接去登陆
-        var topic_release_url = '/login'
+        var article_release_url = '/login'
     }
 
     //访问博主的博客文章
-    var user_topics_url = '/' + blog_username + '/' + 'topics'
+    var user_articles_url = '/' + blog_username + '/' + 'articles'
 
     var header_body = ''
     header_body += '<header id="header">';
@@ -138,15 +138,15 @@ function makeHeader(blog_username, username){
     header_body += '<h1 class="logo"><a href="/index"> ' + blog_username + '的博客</a></h1>';
     header_body += '<li><a href="/index">网站首页</a></li>';
     header_body += '<li>';
-    header_body += '<a href=' + '"' + user_topics_url + '"' + '>文章列表</a>';
+    header_body += '<a href=' + '"' + user_articles_url + '"' + '>文章列表</a>';
     header_body += '<ul class="sub-nav">';
-    header_body += '<li><a href=' + '"' + user_topics_url + '?category=tec"' + '>技术</a></li>';
-    header_body += '<li><a href=' + '"' + user_topics_url + '?category=no-tec"' + '>非技术</a></li>';
+    header_body += '<li><a href=' + '"' + user_articles_url + '?category=tec"' + '>技术</a></li>';
+    header_body += '<li><a href=' + '"' + user_articles_url + '?category=no-tec"' + '>非技术</a></li>';
     header_body += '</ul>';
     header_body += '</li>';
     header_body += '<li><a href="photo.html">我的相册</a> </li>';
     header_body += '<li><a href=' + '"' + user_info_url + '"' + '>关于我</a> </li>';
-    header_body += '<li><a href=' + '"' + topic_release_url + '"' + '>发表博客</a> </li>';
+    header_body += '<li><a href=' + '"' + article_release_url + '"' + '>发表博客</a> </li>';
     header_body += '</nav>';
     header_body += '</div>';
     if (username){

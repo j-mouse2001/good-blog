@@ -30,14 +30,14 @@ A ny individuals and organizations and not for commercial use, professiona websi
     var arrUrl = url.split("//");
     //当前访问的博客博主
     var blog_username = arrUrl[1].split('/')[1];
-    var topic_release_url = '/' + blog_username + '/' + 'topic/release';
+    var article_release_url = '/' + blog_username + '/' + 'article/release';
     var user_info_url = '/' + blog_username + '/' + 'info';
     var html_body = '';
     $.ajax({
         // 请求方式
         type:"get",
         // url
-        url:"http://127.0.0.1:8080/topic/content/"+ username + '/',
+        url:"http://127.0.0.1:8080/article/content/"+ username + '/',
         beforeSend: function(request) {
             request.setRequestHeader("Authorization", token);
         },
@@ -62,7 +62,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                 html_body += '</li>';
                 html_body += '<li><a href="photo.html">我的相册</a> </li>';
                 html_body += '<li><a href=' + '"' + user_info_url + '"' + '>关于我</a> </li>';
-                html_body += '<li><a href=' + '"' + topic_release_url + '"' + '>发表博客</a> </li>';
+                html_body += '<li><a href=' + '"' + article_release_url + '"' + '>发表博客</a> </li>';
                 html_body += '</nav>';
                 html_body += '</div>';
                 if (token){
@@ -83,24 +83,24 @@ A ny individuals and organizations and not for commercial use, professiona websi
                 html_body += '</h1>';
                 html_body += '<div class="blogsbox">';
                 html_body += '<br>';
-                var topics = result.data.topics
-                if(topics.length == 0){
+                var articles = result.data.articles
+                if(articles.length == 0){
                     html_body += '空空如也'
 
                 } else {
 
-                    for(var t in topics){
+                    for(var t in articles){
 
-                        var title = topics[t].title;
-                        var category = topics[t].category;
-                        var created_time = topics[t].created_time;
-                        var introduce = topics[t].introduce;
-                        var author = topics[t].author;
+                        var title = articles[t].title;
+                        var category = articles[t].category;
+                        var created_time = articles[t].created_time;
+                        var summary = articles[t].summary;
+                        var author = articles[t].author;
                         html_body += '<div class="blogsbox">';
                         html_body += '<div class="blogs" data-scroll-reveal="enter bottom over 1s">';
                         html_body += '<h3 class="blogtitle"><a href="info.html" target="_blank">' + title + '</a></h3>';
                         html_body += '<p class="blogtext">';
-                        html_body += introduce;
+                        html_body += summary;
                         html_body += '...</p>'
                         //html_body += '<p class="blogtext">'+ '12345' + '...</p>';
                         html_body += '<div class="bloginfo">';

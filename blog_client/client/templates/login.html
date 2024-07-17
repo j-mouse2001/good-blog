@@ -54,9 +54,11 @@ A ny individuals and organizations and not for commercial use, professiona websi
         // result 为请求的返回结果对象
         success:function (result) {
             if (200 == result.code){
-                alert('登陆成功')
 				window.localStorage.setItem('dnblog_token', result.data.token);
 				window.localStorage.setItem('dnblog_user', result.username);
+                alert('Log in successfully')
+                window.location.href = '/' + result.username + '/articles'
+
             }else{
                 alert(result.error)
             }

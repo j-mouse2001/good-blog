@@ -3,6 +3,7 @@ import jwt
 from django.conf import settings
 from user.models import UserProfile
 
+
 def login_check(func):
 
     def wrapper(request, *args, **kwargs):
@@ -27,3 +28,18 @@ def login_check(func):
 
     return wrapper
 
+
+def get_user_by_request(request):
+    # get token from request
+    token = request.META.get('HTTP_AUTHORIZATION')
+
+    if not token:
+        return None
+
+    try:
+        res = jwt.decode(token, settings.JWT_TOKEN_KEY, algorithms=['HS256'])
+    except Exception as e:
+        return None
+
+    username = res['username']
+    return username
