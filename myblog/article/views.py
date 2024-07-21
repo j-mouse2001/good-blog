@@ -56,6 +56,26 @@ class ArticleView(View):
         res = {'code': 200, 'data': data}
         return res
 
+    def make_article_detail(self, author, author_article):
+        data = {
+            'nickname': author.nickname,
+            'title': author_article.title,
+            'category': author_article.category,
+            'created_time': author_article.created_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'content': author_article.content,
+            'summary': author_article.summary,
+            'author': author.nickname,
+            'last_id': None,
+            'last_title': '',
+            'next_id': None,
+            'next_title': '',
+            'comments': [],
+            'comments_count': 0
+        }
+
+        res = {'code': 200, 'data': data}
+        return res
+
     def get(self, request, author_id):
 
         # check if the author exist
@@ -67,22 +87,44 @@ class ArticleView(View):
 
         visitor_username = get_user_by_request(request)
 
-        # get the category if we have one
-        category = request.GET.get('category')
+        # check if the request is for a single detailed post or not
+        article_id = request.GET.get('a_id')
+        if article_id:
+            article_id = int(article_id)
 
-        if category in ['tec', 'no-tec']:
-            # the author is checking his articles
+            # owner view his own post
             if visitor_username == author_id:
-                author_articles = Article.objects.filter(author_id=author_id, category=category)
+                try:
+                    author_article = Article.objects.get(id=article_id, author_id=author_id)
+                except Exception as e:
+                    return JsonResponse({'code': 10305, 'error': 'article not found'})
+            # others to view owner's post
             else:
-                author_articles = Article.objects.filter(author_id=author_id, visibility='public', category=category)
+                try:
+                    author_article = Article.objects.get(id=article_id, author_id=author_id, visibility='public')
+                except Exception as e:
+                    return JsonResponse({'code': 10305, 'error': 'article not found'})
+
+            res = self.make_article_detail(author, author_article)
+            return JsonResponse(res)
+
         else:
-            if visitor_username == author_id:
-                author_articles = Article.objects.filter(author_id=author_id)
+            # get the category if we have one
+            category = request.GET.get('category')
+
+            if category in ['tec', 'no-tec']:
+                # the author is checking his articles
+                if visitor_username == author_id:
+                    author_articles = Article.objects.filter(author_id=author_id, category=category)
+                else:
+                    author_articles = Article.objects.filter(author_id=author_id, visibility='public', category=category)
             else:
-                author_articles = Article.objects.filter(author_id=author_id, visibility='public')
+                if visitor_username == author_id:
+                    author_articles = Article.objects.filter(author_id=author_id)
+                else:
+                    author_articles = Article.objects.filter(author_id=author_id, visibility='public')
 
-        res = self.make_articles(author, author_articles)
+            res = self.make_articles(author, author_articles)
 
-        return JsonResponse(res)
+            return JsonResponse(res)
 

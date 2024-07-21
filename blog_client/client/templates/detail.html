@@ -32,8 +32,8 @@ A ny individuals and organizations and not for commercial use, professiona websi
     var arrUrl = url.split("//");
     //当前访问的博客博主
     var blog_username = arrUrl[1].split('/')[1];
-    var t_id = arrUrl[1].split('/')[4]
-    var get_url = "http://127.0.0.1:8000/v1/topics/" + blog_username + '?t_id=' + t_id
+    var a_id = arrUrl[1].split('/')[4]
+    var get_url = "http://127.0.0.1:8000/v1/articles/" + blog_username + '?a_id=' + a_id
 
     console.log('get_url')
     console.log(get_url)
@@ -54,7 +54,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                 //console.log(result);
                 $(document).attr('title', '文章详情-'+ result.data.nickname+'的博客');
                 header_html = makeHeader(blog_username, username);
-                var messages_list = result.data.messages
+                var comments_list = result.data.comments
                 html_body += header_html;
                 html_body += '<article>';
                 html_body += '<h1 class="t_nav">';
@@ -75,7 +75,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                     html_body += '<div class="tags"><a href="#" target="_blank">非技术博客</a> &nbsp;</div>'
 
                 }
-                html_body += '<div class="news_about"><strong>简介</strong>' + result.data.introduce + '</div>';
+                html_body += '<div class="news_about"><strong>简介</strong>' + result.data.summary + '</div>';
                 html_body += '<div class="news_con">';
                 html_body += result.data.content;
                 html_body += '</div>';
@@ -83,11 +83,11 @@ A ny individuals and organizations and not for commercial use, professiona websi
                 html_body += '<div class="nextinfo">';
                 if (result.data.last_id){
 
-                    html_body += '<p>上一篇：<a href="/' + blog_username + '/topics/detail/' + result.data.last_id +'">' + result.data.last_title +  '</a></p>'
+                    html_body += '<p>上一篇：<a href="/' + blog_username + '/articles/detail/' + result.data.last_id +'">' + result.data.last_title +  '</a></p>'
                 }
 
                 if (result.data.next_id){
-                    html_body += '<p>下一篇：<a href="/' + blog_username + '/topics/detail/' +  result.data.next_id +'">' + result.data.next_title +  '</a></p>'
+                    html_body += '<p>下一篇：<a href="/' + blog_username + '/articles/detail/' +  result.data.next_id +'">' + result.data.next_title +  '</a></p>'
                 }
 
                 html_body += '</div>';
@@ -97,28 +97,28 @@ A ny individuals and organizations and not for commercial use, professiona websi
                 html_body += '<div class="gbko">';
                 html_body += '<div class="l_box f_l" style="padding:20px;">';
                 html_body += '<div class="commentstitle">';
-                html_body += '<h3 id="comments">到现在<span class="commentsnumber">有' + result.data.messages_count + '条评论</span></h3>';
+                html_body += '<h3 id="comments">到现在<span class="commentsnumber">有' + result.data.comments_count + '条评论</span></h3>';
                 html_body += '</div>';
 
 
-                for(var message in messages_list){
+                for(var message in comments_list){
                 	html_body += '<ol class="commentlist">';
                     html_body += '<li>';
-                    html_body += '<div class="top"><a href="#"  class="url">' + messages_list[message].publisher  + '</a>';
+                    html_body += '<div class="top"><a href="#"  class="url">' + comments_list[message].publisher  + '</a>';
                     html_body += '<span class="time"> @';
-                    html_body += '<a href="#" title="">' + messages_list[message].created_time  + '</a>';
-                    html_body += '<a href="#" class="replyComment" mid=' + messages_list[message].id + '>回复</a>';
+                    html_body += '<a href="#" title="">' + comments_list[message].created_time  + '</a>';
+                    html_body += '<a href="#" class="replyComment" mid=' + comments_list[message].id + '>回复</a>';
                     html_body += '</span>';
                     html_body += '</div>';
 
-                    avatar_url = 'http://127.0.0.1:8000/media/' + messages_list[message].publisher_avatar
+                    avatar_url = 'http://127.0.0.1:8000/media/' + comments_list[message].publisher_avatar
                     html_body  += '<div><img alt="" src="' + avatar_url + '" class="commentAvatar avatar-32 commentPhoto" height="32" width="32" /></div>';
                     html_body += '<div class="body">';
-                    html_body += messages_list[message].content;
+                    html_body += comments_list[message].content;
                     html_body += '</div>';
                     html_body += '</li>';
 
-                    var reply_list = messages_list[message].reply
+                    var reply_list = comments_list[message].reply
 
                     //console.log('reply_list is ')
                     //console.log(reply_list)
@@ -172,7 +172,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                     // dataType
                     dataType:"json",
                     // url
-                    url:"http://127.0.0.1:8000/v1/messages/" + t_id ,
+                    url:"http://127.0.0.1:8000/v1/comments/" + a_id ,
                     // 把JS的对象或数组序列化一个json 字符串
                     data:JSON.stringify(post_data),
                     // result 为请求的返回结果对象
@@ -203,7 +203,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                     onOk:function(reply){
                         //console.log(reply);
                         var post_data = {'content': reply, 'parent_id': m_id};
-                        var reply_url =  "http://127.0.0.1:8000/v1/messages/" + t_id
+                        var reply_url =  "http://127.0.0.1:8000/v1/comments/" + a_id
                         $.ajax({
                         // 请求方式
                         type:"post",

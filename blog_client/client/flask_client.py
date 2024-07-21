@@ -46,8 +46,8 @@ def topics(username):
     #个人博客列表
     return send_file('templates/list.html')
 
-@app.route('/<username>/artiles/detail/<t_id>')
-def topics_detail(username, t_id):
+@app.route('/<username>/articles/detail/<a_id>')
+def topics_detail(username, a_id):
     #博客内容详情
     return send_file('templates/detail.html')
 
