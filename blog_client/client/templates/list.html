@@ -127,6 +127,7 @@ A ny individuals and organizations and not for commercial use, professiona websi
                 //添加删除事件
                 $('.delete').on('click', function(){
                     var delete_id = $(this).attr('data');
+                    console.log(delete_id)
                     var delete_url = "http://127.0.0.1:8000/v1/articles/"+ blog_username + "?" + 'topic_id=' + delete_id;
                     $.ajax({
                         // 请求方式

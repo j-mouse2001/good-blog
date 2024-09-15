@@ -56,7 +56,23 @@ class ArticleView(View):
         res = {'code': 200, 'data': data}
         return res
 
-    def make_article_detail(self, author, author_article):
+    def make_article_detail(self, author, author_article, is_author):
+
+        # get the next and last post if is owner viewing
+        if is_author:
+            next_article = Article.objects.filter(id__gt=author_article.id, author=author).first()
+            last_article = Article.objects.filter(id__lt=author_article.id, author=author).last()
+        else:
+            # if is not author viewing, make sure is public
+            next_article = Article.objects.filter(id__gt=author_article.id, author=author, visibility='public').first()
+            last_article = Article.objects.filter(id__lt=author_article.id, author=author, visibility='public').last()
+
+        next_article_id = next_article.id if next_article else None
+        last_article_id = last_article.id if last_article else None
+
+        next_article_title = next_article.title if next_article else ''
+        last_article_title = last_article.title if last_article else ''
+
         data = {
             'nickname': author.nickname,
             'title': author_article.title,
@@ -65,10 +81,10 @@ class ArticleView(View):
             'content': author_article.content,
             'summary': author_article.summary,
             'author': author.nickname,
-            'last_id': None,
-            'last_title': '',
-            'next_id': None,
-            'next_title': '',
+            'last_id': last_article_id,
+            'last_title': last_article_title,
+            'next_id': next_article_id,
+            'next_title': next_article_title,
             'comments': [],
             'comments_count': 0
         }
@@ -91,9 +107,10 @@ class ArticleView(View):
         article_id = request.GET.get('a_id')
         if article_id:
             article_id = int(article_id)
-
+            is_author = False
             # owner view his own post
             if visitor_username == author_id:
+                is_author = True
                 try:
                     author_article = Article.objects.get(id=article_id, author_id=author_id)
                 except Exception as e:
@@ -105,7 +122,7 @@ class ArticleView(View):
                 except Exception as e:
                     return JsonResponse({'code': 10305, 'error': 'article not found'})
 
-            res = self.make_article_detail(author, author_article)
+            res = self.make_article_detail(author, author_article, is_author)
             return JsonResponse(res)
 
         else:
